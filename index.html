@@ -57,7 +57,6 @@
     <div id="jobForm"></div>
     <div id="charts"></div>
     <div id="tables"></div>
-    <div id="dataManagement"></div>
     <div id="purchaseForm"></div>
     <div id="purchaseHistory"></div>
 </div>
@@ -69,7 +68,6 @@ const components = [
     { id: 'jobForm', path: 'components/job-form.html' },
     { id: 'charts', path: 'components/charts.html' },
     { id: 'tables', path: 'components/tables.html' },
-    { id: 'dataManagement', path: 'components/data-management.html' },
     { id: 'purchaseForm', path: 'components/purchase-form.html' },
     { id: 'purchaseHistory', path: 'components/purchase-history.html' }
 ];
@@ -82,9 +80,10 @@ async function loadComponents() {
             document.getElementById(component.id).innerHTML = html;
             // Pozovi initPovrsina() nakon što se učita jobForm ili purchaseForm
             if ((component.id === 'jobForm' || component.id === 'purchaseForm') && window.initPovrsina) {
-                // Sačekaj da se DOM ažurira
                 setTimeout(() => {
                     window.initPovrsina();
+                    // Fallback: ručno pozovi popuniMaterijalSelectoreNabavka ako postoji
+                    if (window.popuniMaterijalSelectoreNabavka) window.popuniMaterijalSelectoreNabavka();
                 }, 0);
             }
         } catch (error) {
@@ -93,7 +92,10 @@ async function loadComponents() {
     }
 }
 // Pozovi initPovrsina i na window za sigurnost
-import("./js/povrsina.js").then(mod => { window.initPovrsina = mod.initPovrsina; });
+import("./js/povrsina.js").then(mod => {
+    window.initPovrsina = mod.initPovrsina;
+    window.popuniMaterijalSelectoreNabavka = mod.popuniMaterijalSelectoreNabavka;
+});
 document.addEventListener('DOMContentLoaded', () => {
     loadComponents();
 });
