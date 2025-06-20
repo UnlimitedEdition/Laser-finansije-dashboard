@@ -1,0 +1,67 @@
+<div class="dashboard-card mb-4">
+    <h4 class="mb-3">Nova nabavka</h4>
+    <form id="nabavkaForm">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label>Tip nabavke</label>
+                <select class="form-control" id="tipNabavke" required>
+                    <option value="materijal">Materijal iz baze</option>
+                    <option value="ostalo">Ostala nabavka</option>
+                </select>
+            </div>
+            <div class="col-md-3 materijal-polje">
+                <label>Tip materijala</label>
+                <select class="form-control" id="nabavkaTipMaterijala" required>
+                    <option value="">Izaberi tip</option>
+                </select>
+            </div>
+            <div class="col-md-2 materijal-polje">
+                <label>Debljina</label>
+                <select class="form-control" id="nabavkaDebljina" required>
+                    <option value="">Izaberi debljinu</option>
+                </select>
+            </div>
+            <div class="col-md-2 materijal-polje">
+                <label>Varijanta</label>
+                <select class="form-control" id="nabavkaVarijanta">
+                    <option value="">Izaberi varijantu</option>
+                </select>
+            </div>
+            <div class="col-md-7 ostalo-polje" style="display: none;">
+                <label>Opis nabavke</label>
+                <input type="text" class="form-control" id="opisNabavke" placeholder="Npr: Novi laser, Alat, Potrošni materijal...">
+            </div>
+            <div class="col-md-2">
+                <label>Količina</label>
+                <input type="number" class="form-control" id="nabavkaKolicina" min="1" value="" required>
+            </div>
+            <div class="col-md-2">
+                <label>Cena po komadu</label>
+                <input type="number" class="form-control" id="nabavkaCenaPoKomadu" min="0" value="" required>
+            </div>
+            <div class="col-md-3">
+                <label>Datum nabavke</label>
+                <input type="date" class="form-control" id="nabavkaDatum" value="" required>
+            </div>
+            <div class="col-md-2">
+                <label>Širina (mm)</label>
+                <input type="number" class="form-control" id="nabavkaSirina" min="1" value="" placeholder="Unesi širinu">
+            </div>
+            <div class="col-md-2">
+                <label>Visina (mm)</label>
+                <input type="number" class="form-control" id="nabavkaVisina" min="1" value="" placeholder="Unesi visinu">
+            </div>
+            <div class="col-md-2">
+                <label>Površina</label>
+                <div class="form-control-plaintext fw-bold text-info" id="nabavkaPovrsinaGore">0.00 m²</div>
+            </div>
+
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">Dodaj nabavku</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="pregledNabavke" class="mt-4"></div>
+</div>

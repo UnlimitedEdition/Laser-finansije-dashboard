@@ -1,0 +1,102 @@
+<form id="potrosnjaForm" class="mb-4 dashboard-card">
+    <div class="mb-3">
+        <div class="row g-2">
+            <div class="col-md-5">
+                <label>Opis prodaje / posla</label>
+                <input type="text" class="form-control" id="opisPosla" placeholder="Kratak opis prodaje ili posla" required>
+            </div>
+            <div class="col-md-4">
+                <label>Datum</label>
+                <input type="date" class="form-control" id="datumPosla" required>
+            </div>
+            <div class="col-md-3">
+                <!-- <label>Cena (RSD)</label>
+                <input type="number" class="form-control" id="cenaPosla" placeholder="Prodajna cena" required> -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="stavke-container">
+        <div class="stavka mb-3">
+            <div class="row g-2">
+                <div class="col-md-2">
+                    <label>Tip materijala</label>
+                    <select class="form-control tipSelect" required>
+                        <option value="">Izaberi tip</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Debljina</label>
+                    <select class="form-control debljinaSelect" required>
+                        <option value="">Debljina</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Varijanta</label>
+                    <select class="form-control varijantaSelect" required>
+                        <option value="">Varijanta</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Širina (mm)</label>
+                    <input type="number" class="form-control sirina" placeholder="Širina" required>
+                </div>
+                <div class="col-md-2">
+                    <label>Visina (mm)</label>
+                    <input type="number" class="form-control visina" placeholder="Visina" required>
+                </div>
+                <div class="col-md-1">
+                    <label>Kom</label>
+                    <input type="number" class="form-control kolicina" value="1" min="1" required>
+                </div>
+                <div class="col-md-2">
+                    <label>m² / RSD</label>
+                    <div class="metric-value povrsina-cena">0 m² / 0 RSD</div>
+                </div>
+                <div class="col-md-1">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn btn-danger w-100 ukloni-stavku" title="Ukloni materijal">×</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 align-items-center">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-secondary w-100" onclick="dodajNovuStavku()">
+                + Dodaj još jedan materijal
+            </button>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-6">
+                    <div class="job-summary">
+                        Ukupno materijala: <span id="ukupnoPovrsina" class="value">0 m² / 0 RSD</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="job-summary">
+                        Procenjena zarada: <span id="zarada" class="value">0 RSD (0%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label>Cena (RSD)</label>
+            <input type="number" class="form-control" id="cenaPosla" placeholder="Prodajna cena" required>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+            <div class="job-summary w-100">
+                Procenjena zarada: <span id="zarada" class="value">0 RSD (0%)</span>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary w-100">Sačuvaj posao</button>
+        </div>
+    </div>
+</form>
+
+<div id="pregledProdaje" class="mt-4"></div>

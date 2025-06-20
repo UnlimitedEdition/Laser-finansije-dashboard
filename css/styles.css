@@ -1,0 +1,225 @@
+/* Base styles */
+body { 
+    background: #0a1929; 
+    color: white; 
+}
+
+.container { 
+    max-width: 1200px; 
+    margin-top: 20px; 
+}
+
+/* Cards */
+.dashboard-card {
+    background: #132f4c;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.metric-card {
+    background: #132f4c;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    min-height: 120px;
+}
+
+.metric-card.secondary {
+    min-height: 100px;
+    background: #1a3b5c;
+}
+
+.metric-title {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Charts */
+.chart-container { 
+    background: #132f4c;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+/* Tables */
+table { 
+    background: #132f4c;
+    color: white;
+}
+
+.table-bordered {
+    border-color: #1e4976;
+}
+
+.table-bordered td, 
+.table-bordered th {
+    border-color: #1e4976;
+}
+
+/* Form elements */
+.form-control {
+    background: #1e4976;
+    border-color: #1e4976;
+    color: white;
+}
+
+.form-control:focus {
+    background: #1e4976;
+    border-color: #2977c9;
+    color: white;
+    box-shadow: none;
+}
+
+.form-control::placeholder {
+    color: #888;
+}
+
+/* Uklanja strelice iz number input polja za sve browsere */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Material items */
+.stavka {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.stavka:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stavka label {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 3px;
+}
+
+.povrsina-cena {
+    padding: 6px 12px;
+    background: #1e4976;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Input groups */
+.input-group-text {
+    background: #1e4976;
+    border-color: #1e4976;
+    color: white;
+}
+
+/* Buttons */
+.btn-primary {
+    background: #2196f3;
+    border-color: #2196f3;
+}
+
+.btn-primary:hover {
+    background: #1976d2;
+    border-color: #1976d2;
+}
+
+.btn-secondary {
+    background: #455a64;
+    border-color: #455a64;
+}
+
+.btn-secondary:hover {
+    background: #37474f;
+    border-color: #37474f;
+}
+
+.btn-danger {
+    background: #f44336;
+    border-color: #f44336;
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+    border-color: #d32f2f;
+}
+
+.ukloni-stavku {
+    padding: 6px 12px;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* Job form summaries */
+.job-summary {
+    background: #1a3b5c;
+    border-radius: 6px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.job-summary .value {
+    display: block;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 3px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        margin-top: 10px;
+        padding: 0 10px;
+    }
+    
+    .dashboard-card {
+        padding: 15px;
+    }
+    
+    .metric-card {
+        min-height: auto;
+    }
+    
+    .stavka {
+        padding: 10px;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .dashboard-card,
+    .metric-card,
+    .chart-container,
+    table {
+        background: white;
+        color: black;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .btn {
+        display: none;
+    }
+}

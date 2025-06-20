@@ -1,0 +1,46 @@
+# OS fajlovi
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor i IDE fajlovi
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+*.swo
+
+# Logs i privremeni fajlovi
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tmp
+debug.log
+
+# Dependencies
+node_modules/
+bower_components/
+
+# Environment i konfiguracija
+.env
+.env.local
+.env.*.local
+config.local.js
+
+# Build direktorijumi
+dist/
+build/
+out/
+
+# Backup fajlovi
+*.bak
+backups/
+
+# Lokalni test fajlovi
+__tests__/local/
+test/local/
+
+# Sensitive data backup
+data-backup/
+**/sensitive-data.json

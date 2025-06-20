@@ -1,0 +1,14 @@
+<div class="dashboard-card mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0">Upravljanje podacima</h4>
+        <div>
+            <button class="btn btn-primary me-2" onclick="exportData()">Izvezi podatke</button>
+            <button class="btn btn-primary me-2" onclick="document.getElementById('importFile').click()">Uvezi podatke</button>
+            <input type="file" id="importFile" style="display: none" onchange="importData(event)">
+            <button class="btn btn-danger" onclick="if(confirm('Da li ste sigurni? Ovo će obrisati sve podatke.')) clearData()">Obriši sve podatke</button>
+        </div>
+    </div>
+    <div class="alert alert-info">
+        <strong>Info:</strong> Svi podaci se čuvaju lokalno u vašem browseru. Koristite dugmad iznad za prenos podataka između računara.
+    </div>
+</div>
