@@ -4,41 +4,58 @@
 import { MATERIJALI } from '../materials.js';
 
 function popuniMaterijalSelectore() {
-    // Nabavka forma
-    const tipSelect = document.getElementById('nabavkaTipMaterijala');
-    const debljinaSelect = document.getElementById('nabavkaDebljina');
-    const varijantaSelect = document.getElementById('nabavkaVarijanta');
-    if (tipSelect && debljinaSelect && varijantaSelect) {
-        // Popuni tipove
-        tipSelect.innerHTML = '<option value="">Izaberi tip</option>';
-        Object.keys(MATERIJALI.Plexi).forEach(tip => {
-            tipSelect.innerHTML += `<option value="${tip}">${tip}</option>`;
-        });
-        tipSelect.addEventListener('change', () => {
-            // Popuni debljine
-            debljinaSelect.innerHTML = '<option value="">Izaberi debljinu</option>';
-            varijantaSelect.innerHTML = '<option value="">Izaberi varijantu</option>';
-            const tip = tipSelect.value;
-            if (tip && MATERIJALI.Plexi[tip]) {
-                const debljine = [...new Set(MATERIJALI.Plexi[tip].map(m => m.debljina))];
-                debljine.forEach(d => {
+    // Za formu prodaje/nabavke
+    document.querySelectorAll('.stavka').forEach(stavka => {
+        const tipSelect = stavka.querySelector('.tipSelect');
+        const debljinaSelect = stavka.querySelector('.debljinaSelect');
+        const varijantaSelect = stavka.querySelector('.varijantaSelect');
+        const cenaDiv = stavka.querySelector('.povrsina-cena');
+        if (tipSelect && debljinaSelect && varijantaSelect) {
+            // Popuni tipove (nazive)
+            tipSelect.innerHTML = '<option value="">Izaberi materijal</option>';
+            const jedinstveniNazivi = [...new Set(MATERIJALI.map(m => m.naziv))];
+            jedinstveniNazivi.forEach(naziv => {
+                tipSelect.innerHTML += `<option value="${naziv}">${naziv}</option>`;
+            });
+            tipSelect.addEventListener('change', () => {
+                // Popuni debljine za izabrani materijal
+                debljinaSelect.innerHTML = '<option value="">Debljina</option>';
+                varijantaSelect.innerHTML = '<option value="">Varijanta</option>';
+                const izabrani = MATERIJALI.filter(m => m.naziv === tipSelect.value);
+                const jedinstveneDebljine = [...new Set(izabrani.map(m => m.debljina))];
+                jedinstveneDebljine.forEach(d => {
                     debljinaSelect.innerHTML += `<option value="${d}">${d}</option>`;
                 });
-            }
-        });
-        debljinaSelect.addEventListener('change', () => {
-            // Popuni varijante
-            varijantaSelect.innerHTML = '<option value="">Izaberi varijantu</option>';
-            const tip = tipSelect.value;
-            const debljina = debljinaSelect.value;
-            if (tip && debljina && MATERIJALI.Plexi[tip]) {
-                const varijante = [...new Set(MATERIJALI.Plexi[tip].filter(m => m.debljina === debljina).map(m => m.tip))];
-                varijante.forEach(v => {
+                // Prikaz cene i opisa
+                if (izabrani.length > 0 && cenaDiv) {
+                    cenaDiv.textContent = `0 m² / ${izabrani[0].cena.toLocaleString()} RSD`;
+                    cenaDiv.title = izabrani[0].opis;
+                }
+            });
+            debljinaSelect.addEventListener('change', () => {
+                // Popuni varijante za izabrani materijal i debljinu
+                varijantaSelect.innerHTML = '<option value="">Varijanta</option>';
+                const izabrani = MATERIJALI.filter(m => m.naziv === tipSelect.value && m.debljina === debljinaSelect.value);
+                const jedinstveneVarijante = [...new Set(izabrani.map(m => m.opis))];
+                jedinstveneVarijante.forEach(v => {
                     varijantaSelect.innerHTML += `<option value="${v}">${v}</option>`;
                 });
-            }
-        });
-    }
+                // Prikaz cene i opisa
+                if (izabrani.length > 0 && cenaDiv) {
+                    cenaDiv.textContent = `0 m² / ${izabrani[0].cena.toLocaleString()} RSD`;
+                    cenaDiv.title = izabrani[0].opis;
+                }
+            });
+            varijantaSelect.addEventListener('change', () => {
+                // Prikaz cene i opisa za izabranu varijantu
+                const izabrani = MATERIJALI.find(m => m.naziv === tipSelect.value && m.debljina === debljinaSelect.value && m.opis === varijantaSelect.value);
+                if (izabrani && cenaDiv) {
+                    cenaDiv.textContent = `0 m² / ${izabrani.cena.toLocaleString()} RSD`;
+                    cenaDiv.title = izabrani.opis;
+                }
+            });
+        }
+    });
 }
 
 function prikaziPoljaNabavke() {
@@ -116,24 +133,45 @@ function dodajPovrsinaListenerNabavka() {
     updatePovrsina();
 }
 
+function updatePovrsinaICena(stavka) {
+    const tipSelect = stavka.querySelector('.tipSelect');
+    const debljinaSelect = stavka.querySelector('.debljinaSelect');
+    const varijantaSelect = stavka.querySelector('.varijantaSelect');
+    const sirina = stavka.querySelector('.sirina');
+    const visina = stavka.querySelector('.visina');
+    const kolicina = stavka.querySelector('.kolicina');
+    const cenaDiv = stavka.querySelector('.povrsina-cena');
+    // Pronađi izabrani materijal
+    const materijal = MATERIJALI.find(m =>
+        m.naziv === tipSelect.value &&
+        m.debljina === debljinaSelect.value &&
+        (varijantaSelect.value === '' || m.opis === varijantaSelect.value)
+    );
+    const s = parseFloat(sirina.value) || 0;
+    const v = parseFloat(visina.value) || 0;
+    const k = parseFloat(kolicina.value) || 0;
+    let povrsina = (s * v * k) / 1_000_000;
+    let cena = materijal ? materijal.cena : 0;
+    let ukupno = povrsina * cena;
+    if (cenaDiv) {
+        cenaDiv.textContent = povrsina.toFixed(2) + ' m² / ' + ukupno.toLocaleString() + ' RSD';
+        cenaDiv.title = materijal ? materijal.opis : '';
+    }
+}
+
+// Izmeni dodajPovrsinaListenerPosao da koristi updatePovrsinaICena
 function dodajPovrsinaListenerPosao() {
-    // Za svaku stavku materijala
     document.querySelectorAll('.stavka').forEach(stavka => {
+        const tipSelect = stavka.querySelector('.tipSelect');
+        const debljinaSelect = stavka.querySelector('.debljinaSelect');
+        const varijantaSelect = stavka.querySelector('.varijantaSelect');
         const sirina = stavka.querySelector('.sirina');
         const visina = stavka.querySelector('.visina');
         const kolicina = stavka.querySelector('.kolicina');
-        const povrsinaDiv = stavka.querySelector('.povrsina-cena');
-        function updatePovrsina() {
-            const s = parseFloat(sirina.value) || 0;
-            const v = parseFloat(visina.value) || 0;
-            const k = parseFloat(kolicina.value) || 0;
-            let povrsina = (s * v * k) / 1_000_000;
-            povrsinaDiv.textContent = povrsina.toFixed(2) + ' m² / 0 RSD';
-        }
-        sirina.addEventListener('input', updatePovrsina);
-        visina.addEventListener('input', updatePovrsina);
-        kolicina.addEventListener('input', updatePovrsina);
-        updatePovrsina();
+        [tipSelect, debljinaSelect, varijantaSelect, sirina, visina, kolicina].forEach(el => {
+            if (el) el.addEventListener('input', () => updatePovrsinaICena(stavka));
+        });
+        updatePovrsinaICena(stavka);
     });
 }
 
