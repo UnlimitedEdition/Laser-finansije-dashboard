@@ -207,10 +207,14 @@ function dodajPovrsinaListenerPosao() {
         const visina = stavka.querySelector('.visina');
         const kolicina = stavka.querySelector('.kolicina');
         [tipSelect, debljinaSelect, varijantaSelect, sirina, visina, kolicina].forEach(el => {
-            if (el) el.addEventListener('input', () => updatePovrsinaICena(stavka));
+            if (el) el.addEventListener('input', () => {
+                updatePovrsinaICena(stavka);
+                prikaziUkupnoMaterijala();
+            });
         });
         updatePovrsinaICena(stavka);
     });
+    prikaziUkupnoMaterijala();
 }
 
 function prikaziPregledNabavke() {
@@ -270,6 +274,36 @@ function prikaziPregledProdaje() {
             </tr></tbody>
         </table>
     `;
+}
+
+function prikaziUkupnoMaterijala() {
+    // Prikaz ukupne površine i cene svih stavki u #ukupnoPovrsina
+    const ukupnoSpan = document.getElementById('ukupnoPovrsina');
+    if (!ukupnoSpan) return;
+    let ukupnaPovrsina = 0;
+    let ukupnaCena = 0;
+    document.querySelectorAll('.stavka').forEach(stavka => {
+        const tipSelect = stavka.querySelector('.tipSelect');
+        const debljinaSelect = stavka.querySelector('.debljinaSelect');
+        const varijantaSelect = stavka.querySelector('.varijantaSelect');
+        const sirina = stavka.querySelector('.sirina');
+        const visina = stavka.querySelector('.visina');
+        const kolicina = stavka.querySelector('.kolicina');
+        if (!tipSelect || !debljinaSelect || !sirina || !visina || !kolicina) return;
+        const materijal = MATERIJALI.find(m =>
+            m.naziv === tipSelect.value &&
+            m.debljina === debljinaSelect.value &&
+            (varijantaSelect?.value === '' || m.opis === varijantaSelect?.value)
+        );
+        const s = parseFloat(sirina.value) || 0;
+        const v = parseFloat(visina.value) || 0;
+        const k = parseFloat(kolicina.value) || 0;
+        let povrsina = (s * v * k) / 1_000_000;
+        let cena = materijal ? materijal.cena : 0;
+        ukupnaPovrsina += povrsina;
+        ukupnaCena += povrsina * cena;
+    });
+    ukupnoSpan.textContent = ukupnaPovrsina.toFixed(2) + ' m² / ' + ukupnaCena.toLocaleString() + ' RSD';
 }
 
 // Dodavanje nove stavke sa unikatnim id/name/for

@@ -212,3 +212,67 @@ window.addEventListener('DOMContentLoaded', inicijalizujPodatke);
 //     ...tvoja logika...
 //     await autoUpisiNaServer();
 // };
+
+async function prikaziTabeluPoslova() {
+    const tabela = document.getElementById('posloviTabela').querySelector('tbody');
+    tabela.innerHTML = '';
+    const podaci = await ucitajPodatkeSaServera();
+    if (!podaci || !Array.isArray(podaci.poslovi)) return;
+    podaci.poslovi.forEach((posao, idx) => {
+        const ukupno = posao.stavke?.reduce((acc, s) => {
+            const materijal = window.MATERIJALI?.find(m => m.naziv === s.tip && m.debljina === s.debljina);
+            const povrsina = (parseFloat(s.sirina) * parseFloat(s.visina) * parseFloat(s.kolicina)) / 1_000_000;
+            const cena = materijal ? materijal.cena : 0;
+            return {
+                povrsina: acc.povrsina + povrsina,
+                cena: acc.cena + povrsina * cena
+            };
+        }, { povrsina: 0, cena: 0 });
+        const materijali = posao.stavke?.map(s => `${s.tip} (${s.debljina})`).join(', ');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${posao.datum}</td>
+            <td>${posao.opis}</td>
+            <td>${materijali || ''}</td>
+            <td>${ukupno.povrsina.toFixed(2)} m² / ${ukupno.cena.toLocaleString()} RSD</td>
+            <td>${posao.cena ? parseFloat(posao.cena).toLocaleString() + ' RSD' : ''}</td>
+            <td>-</td>
+            <td>-</td>
+            <td><button class="btn btn-sm btn-outline-primary" onclick="popuniFormuIzPosla(${idx})">Popuni formu</button></td>
+        `;
+        tabela.appendChild(tr);
+    });
+}
+window.prikaziTabeluPoslova = prikaziTabeluPoslova;
+
+window.popuniFormuIzPosla = async function(idx) {
+    const podaci = await ucitajPodatkeSaServera();
+    if (!podaci || !Array.isArray(podaci.poslovi) || !podaci.poslovi[idx]) return;
+    const posao = podaci.poslovi[idx];
+    // Popuni osnovna polja
+    document.getElementById('opisPosla').value = posao.opis || '';
+    document.getElementById('datumPosla').value = posao.datum || '';
+    document.getElementById('cenaPosla').value = posao.cena || '';
+    // Ukloni sve stavke osim prve
+    const stavkeContainer = document.querySelector('.stavke-container');
+    while (stavkeContainer.querySelectorAll('.stavka').length > 1) {
+        stavkeContainer.lastElementChild.remove();
+    }
+    // Popuni stavke
+    posao.stavke.forEach((s, i) => {
+        if (i > 0) window.dodajNovuStavku();
+        const stavka = stavkeContainer.querySelectorAll('.stavka')[i];
+        stavka.querySelector('.tipSelect').value = s.tip || '';
+        stavka.querySelector('.debljinaSelect').value = s.debljina || '';
+        stavka.querySelector('.varijantaSelect').value = s.varijanta || '';
+        stavka.querySelector('.sirina').value = s.sirina || '';
+        stavka.querySelector('.visina').value = s.visina || '';
+        stavka.querySelector('.kolicina').value = s.kolicina || '';
+        // Trigger change za selectore
+        stavka.querySelector('.tipSelect').dispatchEvent(new Event('change'));
+        stavka.querySelector('.debljinaSelect').dispatchEvent(new Event('change'));
+        stavka.querySelector('.varijantaSelect').dispatchEvent(new Event('change'));
+    });
+    // Ažuriraj proračune
+    if (window.initPovrsina) window.initPovrsina();
+};
