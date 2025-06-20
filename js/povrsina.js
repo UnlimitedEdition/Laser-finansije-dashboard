@@ -58,6 +58,40 @@ function popuniMaterijalSelectore() {
     });
 }
 
+function popuniMaterijalSelectoreNabavka() {
+    // Nabavka forma: koristi ID-jeve
+    const tipSelect = document.getElementById('nabavkaTipMaterijala');
+    const debljinaSelect = document.getElementById('nabavkaDebljina');
+    const varijantaSelect = document.getElementById('nabavkaVarijanta');
+    if (tipSelect && debljinaSelect && varijantaSelect) {
+        // Popuni tipove (nazive)
+        tipSelect.innerHTML = '<option value="">Izaberi tip</option>';
+        const jedinstveniNazivi = [...new Set(MATERIJALI.map(m => m.naziv))];
+        jedinstveniNazivi.forEach(naziv => {
+            tipSelect.innerHTML += `<option value="${naziv}">${naziv}</option>`;
+        });
+        tipSelect.addEventListener('change', () => {
+            // Popuni debljine za izabrani materijal
+            debljinaSelect.innerHTML = '<option value="">Izaberi debljinu</option>';
+            varijantaSelect.innerHTML = '<option value="">Izaberi varijantu</option>';
+            const izabrani = MATERIJALI.filter(m => m.naziv === tipSelect.value);
+            const jedinstveneDebljine = [...new Set(izabrani.map(m => m.debljina))];
+            jedinstveneDebljine.forEach(d => {
+                debljinaSelect.innerHTML += `<option value="${d}">${d}</option>`;
+            });
+        });
+        debljinaSelect.addEventListener('change', () => {
+            // Popuni varijante za izabrani materijal i debljinu
+            varijantaSelect.innerHTML = '<option value="">Izaberi varijantu</option>';
+            const izabrani = MATERIJALI.filter(m => m.naziv === tipSelect.value && m.debljina === debljinaSelect.value);
+            const jedinstveneVarijante = [...new Set(izabrani.map(m => m.opis))];
+            jedinstveneVarijante.forEach(v => {
+                varijantaSelect.innerHTML += `<option value="${v}">${v}</option>`;
+            });
+        });
+    }
+}
+
 function prikaziPoljaNabavke() {
     const tipNabavke = document.getElementById('tipNabavke');
     const materijalPolja = document.querySelectorAll('.materijal-polje');
@@ -76,6 +110,7 @@ function initPovrsina() {
     // Nabavka forma
     const nabavkaForm = document.getElementById('nabavkaForm');
     if (nabavkaForm) {
+        popuniMaterijalSelectoreNabavka(); // <-- DODATO
         dodajPovrsinaListenerNabavka();
         nabavkaForm.addEventListener('input', prikaziPregledNabavke);
         prikaziPregledNabavke();
