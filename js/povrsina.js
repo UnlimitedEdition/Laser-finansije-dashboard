@@ -282,6 +282,7 @@ function prikaziUkupnoMaterijala() {
     if (!ukupnoSpan) return;
     let ukupnaPovrsina = 0;
     let ukupnaCena = 0;
+    let validStavke = 0;
     document.querySelectorAll('.stavka').forEach(stavka => {
         const tipSelect = stavka.querySelector('.tipSelect');
         const debljinaSelect = stavka.querySelector('.debljinaSelect');
@@ -290,21 +291,97 @@ function prikaziUkupnoMaterijala() {
         const visina = stavka.querySelector('.visina');
         const kolicina = stavka.querySelector('.kolicina');
         if (!tipSelect || !debljinaSelect || !sirina || !visina || !kolicina) return;
+        const s = parseFloat(sirina.value);
+        const v = parseFloat(visina.value);
+        const k = parseFloat(kolicina.value);
+        if (!tipSelect.value || !debljinaSelect.value || isNaN(s) || isNaN(v) || isNaN(k) || s <= 0 || v <= 0 || k <= 0) return;
         const materijal = MATERIJALI.find(m =>
             m.naziv === tipSelect.value &&
             m.debljina === debljinaSelect.value &&
             (varijantaSelect?.value === '' || m.opis === varijantaSelect?.value)
         );
-        const s = parseFloat(sirina.value) || 0;
-        const v = parseFloat(visina.value) || 0;
-        const k = parseFloat(kolicina.value) || 0;
+        if (!materijal) return;
         let povrsina = (s * v * k) / 1_000_000;
-        let cena = materijal ? materijal.cena : 0;
+        let cena = materijal.cena;
         ukupnaPovrsina += povrsina;
         ukupnaCena += povrsina * cena;
+        validStavke++;
     });
-    ukupnoSpan.textContent = ukupnaPovrsina.toFixed(2) + ' m² / ' + ukupnaCena.toLocaleString() + ' RSD';
+    // Prikaz sa ikonicom i animacijom
+    const staraVrednost = ukupnoSpan.textContent;
+    const novaVrednost = `<span class="ukupno-ikona" aria-hidden="true">🧮</span> <span class="ukupno-vrednost">${ukupnaPovrsina.toFixed(2)} m²</span> / <span class="ukupno-vrednost">${ukupnaCena.toLocaleString()} RSD</span>`;
+    ukupnoSpan.innerHTML = novaVrednost;
+    if (staraVrednost !== novaVrednost) {
+        ukupnoSpan.classList.remove('ukupno-anim');
+        void ukupnoSpan.offsetWidth; // reflow for restart animation
+        ukupnoSpan.classList.add('ukupno-anim');
+    }
+    ukupnoSpan.setAttribute('title', `Ukupno materijala (${validStavke} stavki)`);
+    if (validStavke === 0) {
+        ukupnoSpan.innerHTML = '<span class="ukupno-ikona" aria-hidden="true">🧮</span> <span class="ukupno-vrednost">0.00 m²</span> / <span class="ukupno-vrednost">0 RSD</span>';
+    }
 }
+
+function prikaziMinimalnuCenu(ukupnaCena) {
+    const minCenaSpan = document.getElementById('minimalnaCena');
+    if (minCenaSpan) {
+        minCenaSpan.textContent = ukupnaCena.toLocaleString() + ' RSD';
+    }
+}
+
+function prikaziZaradu() {
+    const zaradaSpan = document.getElementById('zarada');
+    const cenaInput = document.getElementById('cenaPosla');
+    const minCenaSpan = document.getElementById('minimalnaCena');
+    if (!zaradaSpan || !cenaInput || !minCenaSpan) return;
+    // Minimalna cena je ukupna cena materijala
+    const minimalnaCena = parseFloat(minCenaSpan.textContent.replace(/\./g, '').replace(/,/g, '').replace(/\s*RSD/, '')) || 0;
+    const prodajnaCena = parseFloat(cenaInput.value) || 0;
+    const profit = prodajnaCena - minimalnaCena;
+    const procenat = minimalnaCena > 0 ? Math.round((profit / minimalnaCena) * 100) : 0;
+    // Prikaz sa bojom i animacijom
+    const staraVrednost = zaradaSpan.innerHTML;
+    let boja = profit > 0 ? '#00e676' : (profit < 0 ? '#f44336' : '#ffd600');
+    zaradaSpan.innerHTML = `<span style="color:${boja};font-weight:bold;">${profit.toLocaleString()} RSD (${procenat}%)</span>`;
+    if (staraVrednost !== zaradaSpan.innerHTML) {
+        zaradaSpan.classList.remove('ukupno-anim');
+        void zaradaSpan.offsetWidth;
+        zaradaSpan.classList.add('ukupno-anim');
+    }
+    zaradaSpan.setAttribute('title', `Procenjena zarada: ${profit.toLocaleString()} RSD (${procenat}%)`);
+}
+
+// Izmenjena prikaziUkupnoMaterijala da ažurira i minimalnu cenu
+const staraPrikaziUkupno = window.prikaziUkupnoMaterijala;
+window.prikaziUkupnoMaterijala = function() {
+    staraPrikaziUkupno();
+    // Izvuci ukupnu cenu materijala iz ukupnoSpan
+    const ukupnoSpan = document.getElementById('ukupnoPovrsina');
+    let ukupnaCena = 0;
+    if (ukupnoSpan) {
+        const match = ukupnoSpan.innerText.match(/([\d.]+)\s*m²\s*\/\s*([\d.,]+)\s*RSD/);
+        if (match && match[2]) {
+            ukupnaCena = parseFloat(match[2].replace(/\./g, '').replace(/,/g, '')) || 0;
+        }
+    }
+    prikaziMinimalnuCenu(ukupnaCena);
+    prikaziZaradu();
+};
+
+// Pozovi prikaziZaradu nakon prikaziUkupnoMaterijala
+const staraPrikaziUkupno = window.prikaziUkupnoMaterijala;
+window.prikaziUkupnoMaterijala = function() {
+    staraPrikaziUkupno();
+    prikaziZaradu();
+};
+
+// Pozovi prikaziZaradu i na input u cenaPosla
+window.addEventListener('DOMContentLoaded', () => {
+    const cenaInput = document.getElementById('cenaPosla');
+    if (cenaInput) {
+        cenaInput.addEventListener('input', prikaziZaradu);
+    }
+});
 
 // Dodavanje nove stavke sa unikatnim id/name/for
 window.dodajNovuStavku = function() {

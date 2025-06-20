@@ -182,6 +182,29 @@ input[type=number] {
     margin-top: 3px;
 }
 
+/* --- Moderni prikaz ukupno materijala --- */
+.ukupno-ikona {
+    font-size: 1.5em;
+    vertical-align: middle;
+    margin-right: 8px;
+    color: #ffd600;
+}
+.ukupno-vrednost {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #00e676;
+    margin: 0 4px;
+}
+.ukupno-anim {
+    animation: ukupnoPulse 0.5s;
+}
+@keyframes ukupnoPulse {
+    0% { background: #1e4976; color: #fff; }
+    50% { background: #00e676; color: #0a1929; }
+    100% { background: #1e4976; color: #fff; }
+}
+/* --- Kraj dodatka --- */
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .container {
