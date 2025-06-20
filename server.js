@@ -70,8 +70,8 @@ app.get('/api/podaci', async (req, res) => {
     }
 });
 
-// SPA fallback: uvek na samom kraju!
-app.get('/*', (req, res) => {
+// SPA fallback: koristi regex, ne string!
+app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
