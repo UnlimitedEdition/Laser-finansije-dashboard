@@ -2,9 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
+
+// Serve static frontend files
+app.use(express.static(path.join(__dirname)));
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_USERNAME = process.env.GITHUB_USERNAME;
@@ -64,6 +68,11 @@ app.get('/api/podaci', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// SPA fallback: always serve index.html for unknown routes (for client-side routing)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3001;
