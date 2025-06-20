@@ -1,56 +1,68 @@
 # Laser Finansije Dashboard
 
-Aplikacija za praćenje potrošnje materijala, prihoda i profita u laserskoj radionici. Podaci se automatski sinhronizuju između svih uređaja putem GitHub repozitorijuma.
+A modern web application for tracking material consumption, income, and profit in a laser workshop. Data is automatically synchronized across all devices via a secure GitHub backend.
 
-## Funkcionalnosti
-- Praćenje prihoda i rashoda
-- Automatski proračun profita i marže
-- Vizuelizacija podataka (grafikoni, tabele, metrike)
-- Sinhronizacija podataka preko GitHub-a (backend API)
-- Modularni frontend (sve komponente u posebnom fajlu)
+---
 
-## Tehnologije
-- Frontend: HTML, CSS (Bootstrap), JavaScript (ES6), Chart.js
-- Backend: Node.js (Express), GitHub REST API
+## 🚀 Features
+- Track income and expenses by job and material
+- Automatic calculation of profit and margin
+- Real-time data visualization (charts, tables, metrics)
+- Centralized material and job database
+- Modular frontend (reusable components)
+- Secure backend API with GitHub data sync
+- Responsive and accessible UI
 
-## Pokretanje projekta
+## 🏗️ Architecture
+- **Frontend:** HTML, CSS (custom + Bootstrap), JavaScript (ES6), Chart.js
+- **Backend:** Node.js (Express), GitHub REST API
+- **Data Storage:** GitHub repository (JSON file)
 
-### 1. Backend (Node.js server)
-1. Instaliraj zavisnosti:
+## ⚙️ Installation & Usage
+
+### 1. Backend Setup (Node.js)
+1. Install dependencies:
    ```bash
    npm install express node-fetch dotenv body-parser
    ```
-2. Uredi `.env` fajl (primer):
+2. Configure environment variables in `.env`:
    ```env
-   GITHUB_TOKEN=ovde_tvoj_token
-   GITHUB_USERNAME=UnlimitedEdition
-   REPO_NAME=Laser-finansije-dashboard
+   GITHUB_TOKEN=your_github_token
+   GITHUB_USERNAME=your_github_username
+   REPO_NAME=your_repo_name
    DATA_FILE=data.json
    PORT=3001
    ```
-3. Pokreni server:
+3. Start the backend server:
    ```bash
    node server.js
    ```
 
-### 2. Frontend (lokalni server)
-1. Pokreni lokalni server (npr. Python):
+### 2. Frontend Setup (Local Server)
+1. Start a local server (example with Python):
    ```bash
    python -m http.server 8000
    ```
-2. Otvori [http://localhost:8000](http://localhost:8000) u browseru.
+2. Open [http://localhost:8000](http://localhost:8000) in your browser.
 
-## Sinhronizacija podataka
-- Svi podaci se automatski čuvaju na GitHub-u preko backend servera.
-- Kada otvoriš aplikaciju na bilo kom uređaju, podaci se automatski povlače sa GitHub-a.
-- Svaka izmena (unos, brisanje) se automatski upisuje na GitHub.
+---
 
-## Bezbednost
-- GitHub token se čuva isključivo u `.env` fajlu na backendu (nikada u browseru ili repozitorijumu).
-- `.env` je u `.gitignore` i ne ide na GitHub.
+## 🔄 Data Synchronization
+- All data is securely stored and synchronized via the backend to GitHub.
+- Any change (add, edit, delete) is instantly pushed to the repository.
+- On app load, the latest data is fetched from GitHub.
 
-## Doprinos
-- Forkuj repozitorijum, napravi branch, pošalji Pull Request.
+## 🔒 Security
+- GitHub token is stored only in the backend `.env` file (never in the browser or repo).
+- `.env` is listed in `.gitignore` and never committed.
 
-## Licenca
-MIT
+## 🤝 Contributing
+- Fork the repository, create a feature branch, and submit a Pull Request.
+- Please follow best practices and write clear commit messages.
+
+## 📄 License
+MIT License
+
+---
+
+> Developed with ❤️ for laser workshops and makers.
