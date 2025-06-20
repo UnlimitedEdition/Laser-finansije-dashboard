@@ -70,8 +70,8 @@ app.get('/api/podaci', async (req, res) => {
     }
 });
 
-// SPA fallback: always serve index.html for unknown routes (for client-side routing)
-app.get('*', (req, res) => {
+// SPA fallback: uvek na samom kraju!
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
