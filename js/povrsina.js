@@ -272,4 +272,67 @@ function prikaziPregledProdaje() {
     `;
 }
 
+// Dodavanje nove stavke sa unikatnim id/name/for
+window.dodajNovuStavku = function() {
+    const stavkeContainer = document.querySelector('.stavke-container');
+    if (!stavkeContainer) return;
+    // Broj postojećih stavki
+    const idx = stavkeContainer.querySelectorAll('.stavka').length;
+    // HTML šablon sa sufiksom
+    const html = `
+    <div class="stavka mb-3">
+        <div class="row g-2">
+            <div class="col-md-2">
+                <label for="tipSelect-${idx}">Tip materijala</label>
+                <select class="form-control tipSelect" id="tipSelect-${idx}" name="tipSelect-${idx}" required>
+                    <option value="">Izaberi tip</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="debljinaSelect-${idx}">Debljina</label>
+                <select class="form-control debljinaSelect" id="debljinaSelect-${idx}" name="debljinaSelect-${idx}" required>
+                    <option value="">Debljina</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="varijantaSelect-${idx}">Varijanta</label>
+                <select class="form-control varijantaSelect" id="varijantaSelect-${idx}" name="varijantaSelect-${idx}" required>
+                    <option value="">Varijanta</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="sirina-${idx}">Širina (mm)</label>
+                <input type="number" class="form-control sirina" id="sirina-${idx}" name="sirina-${idx}" placeholder="Širina" required>
+            </div>
+            <div class="col-md-2">
+                <label for="visina-${idx}">Visina (mm)</label>
+                <input type="number" class="form-control visina" id="visina-${idx}" name="visina-${idx}" placeholder="Visina" required>
+            </div>
+            <div class="col-md-1">
+                <label for="kolicina-${idx}">Kom</label>
+                <input type="number" class="form-control kolicina" id="kolicina-${idx}" name="kolicina-${idx}" value="1" min="1" required>
+            </div>
+            <div class="col-md-2">
+                <label for="povrsina-cena-${idx}">m² / RSD</label>
+                <div class="metric-value povrsina-cena" id="povrsina-cena-${idx}">0 m² / 0 RSD</div>
+            </div>
+            <div class="col-md-1">
+                <label>&nbsp;</label>
+                <button type="button" class="btn btn-danger w-100 ukloni-stavku" title="Ukloni materijal">×</button>
+            </div>
+        </div>
+    </div>`;
+    // Dodaj u DOM
+    stavkeContainer.insertAdjacentHTML('beforeend', html);
+    // Dodaj event za uklanjanje
+    const novaStavka = stavkeContainer.lastElementChild;
+    novaStavka.querySelector('.ukloni-stavku').addEventListener('click', function() {
+        novaStavka.remove();
+    });
+    // Ponovo popuni selectore i evente
+    if (window.initPovrsina) window.initPovrsina();
+};
+
+// Prva stavka u HTML-u mora imati sufiks -0 i povezane labele
+
 export { initPovrsina };
