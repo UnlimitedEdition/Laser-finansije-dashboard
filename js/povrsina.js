@@ -59,10 +59,11 @@ function popuniMaterijalSelectore() {
 }
 
 function popuniMaterijalSelectoreNabavka() {
-    // Nabavka forma: koristi ID-jeve
+    console.log('[DEBUG] Pozvana popuniMaterijalSelectoreNabavka');
     const tipSelect = document.getElementById('nabavkaTipMaterijala');
     const debljinaSelect = document.getElementById('nabavkaDebljina');
     const varijantaSelect = document.getElementById('nabavkaVarijanta');
+    console.log('[DEBUG] tipSelect:', tipSelect, 'debljinaSelect:', debljinaSelect, 'varijantaSelect:', varijantaSelect);
     if (tipSelect && debljinaSelect && varijantaSelect) {
         // Popuni tipove (nazive)
         tipSelect.innerHTML = '<option value="">Izaberi tip</option>';
@@ -89,6 +90,8 @@ function popuniMaterijalSelectoreNabavka() {
                 varijantaSelect.innerHTML += `<option value="${v}">${v}</option>`;
             });
         });
+    } else {
+        console.warn('[DEBUG] Neki od select elemenata nije pronađen u DOM-u!');
     }
 }
 
